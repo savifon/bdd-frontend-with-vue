@@ -20,6 +20,8 @@ defineFeature(feature, (test) => {
     and('digito a senha', async () => {
       const passwordInput = screen.find('input#password')
       await passwordInput.setValue('abc123!@#')
+      const confirmPasswordInput = screen.find('input#confirm-password')
+      await confirmPasswordInput.setValue('abc123!@#')
     })
 
     and('salvo', async () => {
@@ -33,24 +35,30 @@ defineFeature(feature, (test) => {
   })
 
   test('Cadastro não realizado - e-mail já cadastrado', ({ given, when, and, then }) => {
+    const screen = mount(App)
     given('estou na tela de cadastro do sistema', () => {
-      //
+      expect(screen.text()).toContain('Cadastre-se no sistema')
     })
 
-    when(/^preencho meu email com "(.*)"$/, (arg0) => {
-      //
+    when(/^preencho meu email com "(.*)"$/, async (email) => {
+      const emailInput = screen.find('input#email')
+      await emailInput.setValue(email)
     })
 
-    and('digito a senha', () => {
-      //
+    and('digito a senha', async () => {
+      const passwordInput = screen.find('input#password')
+      await passwordInput.setValue('abc123!@#')
+      const confirmPasswordInput = screen.find('input#confirm-password')
+      await confirmPasswordInput.setValue('abc123!@#')
     })
 
-    and('salvo', () => {
-      //
+    and('salvo', async () => {
+      const submitButton = screen.find('button#save')
+      await submitButton.trigger('submit')
     })
 
     then('o sistema apresenta a mensagem de falha', () => {
-      //
+      expect(screen.text()).toContain('Este e-mail já está cadastrado no sistema')
     })
   })
 })
