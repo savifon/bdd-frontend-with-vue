@@ -1,19 +1,18 @@
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const feedbackMessage = ref('')
 
-function handleSubmit() {
-  event.preventDefault()
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
-  if (emailRegex.test(email.value) && email.value !== 'existente@gmail.com') {
-    feedbackMessage.value = 'Cadastro realizado com sucesso!'
-  } else if (email.value === 'existente@gmail.com') {
-    feedbackMessage.value = 'Este e-mail já está cadastrado no sistema'
-  }
+async function handleSubmit() {
+  const response = await axios.post('http://localhost:8080/api/users', {
+    email: email.value,
+    password: password.value
+  })
+  if (response.data?.message) feedbackMessage.value = response.data?.message
 }
 </script>
 
@@ -21,7 +20,7 @@ function handleSubmit() {
   <div id="container">
     <h1>Cadastre-se no sistema</h1>
 
-    <form @submit="handleSubmit">
+    <form @submit.prevent="handleSubmit">
       <div class="input-field">
         <label for="email">Digite seu e-mail</label>
         <input type="email" id="email" v-model="email" />
